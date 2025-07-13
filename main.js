@@ -371,8 +371,8 @@ todoList.onclick = async function (event) {
         await toggleCompleteTask(task.id, !task.isCompleted);
 
         // Lưu và hiển thị lại
-        // await getAllTasks();
-        // renderTasks();
+        const tasks = await getAllTasks();
+        renderTasks(tasks);
     }
 };
 
