@@ -473,12 +473,12 @@ tabs.onclick = async function (event) {
     // Render đúng khi click vào từng tab
     switch (tabActiveValue) {
         case TAB_KEYS.activeTab:
-            const activeTasks = todoTasks.filter(task => !task.isCompleted);
+            const activeTasks = todoTasks?.filter(task => !task.isCompleted);
             renderTasks(activeTasks);
             break;
 
         case "completed-tab":
-            const completedTabs = todoTasks.filter(task => task.isCompleted);
+            const completedTabs = todoTasks?.filter(task => task.isCompleted);
             renderTasks(completedTabs);
             break;
 
