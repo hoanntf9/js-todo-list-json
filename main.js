@@ -380,6 +380,10 @@ deleteTaskSubmit.onclick = async function () {
     // Xóa task khỏi danh sách,
     await deleteTask(deleteIndex);
 
+    const tasks = await getAllTasks();
+    renderTasks(tasks);
+
+
     showToast({
         text: "Delete task successfully!",
         backgroundColor: "#62ac89",
