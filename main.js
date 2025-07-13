@@ -295,11 +295,14 @@ todoForm.onsubmit = async (event) => {
     // Đóng form
     closeForm();
 
-    // Hiển thị lại danh sách task
-    const activeTab = localStorage.getItem(TAB_KEYS.activeTab);
-    getTasksByTab(activeTab);
+    saveTabActive(TAB_KEYS.activeTab);
+    $$(".tab-button").forEach(tab => tab.classList.remove("active"));
+    $(`.tab-button[data-tab="${TAB_KEYS.activeTab}"]`).classList.add("active");
 
-    // renderTasks(tasks);
+    // Hiển thị lại danh sách task
+    todoTasks = await getAllTasks();
+    const tasks = await getTasksByTab(TAB_KEYS.activeTab);
+    renderTasks(tasks);
 };
 
 // Hàm lưu trạng thái tab đang chọn
@@ -382,7 +385,6 @@ deleteTaskSubmit.onclick = async function () {
 
     const tasks = await getAllTasks();
     renderTasks(tasks);
-
 
     showToast({
         text: "Delete task successfully!",
@@ -492,7 +494,8 @@ tabs.onclick = async function (event) {
     }
 };
 
-function getTasksByTab(tab) {
+async function getTasksByTab(tab) {
+    const tasks = await getAllTasks();
     switch (tab) {
         case TAB_KEYS.activeTab:
             return tasks.filter(task => !task.isCompleted);
