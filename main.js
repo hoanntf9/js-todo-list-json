@@ -60,13 +60,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     switch (activeTab) {
 
         case TAB_KEYS.activeTab:
-            const activeTasks = todoTasks.slice(0).filter(task => !task.isCompleted);
+            const activeTasks = todoTasks.filter(task => !task.isCompleted);
             renderTasks(activeTasks);
 
             break;
 
         case TAB_KEYS.completedTab:
-            const completedTabs = todoTasks.slice(0).filter(task => task.isCompleted);
+            const completedTabs = todoTasks.filter(task => task.isCompleted);
             renderTasks(completedTabs);
             break;
 
@@ -244,7 +244,7 @@ async function toggleCompleteTask(id, isCompleted) {
 function checkTitleDuplicate(title, taskIndex) {
     const normalizedTitle = removeVietnameseTones(title);
 
-    return todoTasks.some((task, index) => {
+    return todoTasks?.some((task, index) => {
         if (taskIndex !== null && index === taskIndex) return false;
         return removeVietnameseTones(task.title) === normalizedTitle;
     });
