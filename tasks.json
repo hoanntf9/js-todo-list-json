@@ -10,7 +10,7 @@
       "dueDate": "",
       "color": "blue",
       "id": "0100",
-      "isCompleted": true
+      "isCompleted": false
     },
     {
       "title": "3131 - EDIT",
@@ -22,7 +22,7 @@
       "dueDate": "",
       "color": "blue",
       "id": "4668",
-      "isCompleted": true
+      "isCompleted": false
     },
     {
       "id": "8547",
@@ -46,7 +46,7 @@
       "endTime": "",
       "dueDate": "",
       "color": "blue",
-      "isCompleted": false
+      "isCompleted": true
     },
     {
       "id": "1091",
@@ -70,7 +70,7 @@
       "endTime": "",
       "dueDate": "",
       "color": "blue",
-      "isCompleted": false
+      "isCompleted": true
     },
     {
       "id": "f85a",
@@ -82,7 +82,7 @@
       "endTime": "",
       "dueDate": "",
       "color": "blue",
-      "isCompleted": false
+      "isCompleted": true
     },
     {
       "id": "12fe",
@@ -94,7 +94,7 @@
       "endTime": "",
       "dueDate": "",
       "color": "blue",
-      "isCompleted": false
+      "isCompleted": true
     },
     {
       "id": "69a6",

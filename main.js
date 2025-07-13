@@ -370,7 +370,9 @@ todoList.onclick = async function (event) {
         await toggleCompleteTask(task.id, !task.isCompleted);
 
         // Lưu và hiển thị lại
-        const tasks = await getAllTasks();
+        const currentTab = localStorage.getItem("activeTab") || TAB_KEYS.activeTab;
+        const tasks = await getTasksByTab(currentTab);
+
         renderTasks(tasks);
     }
 };
