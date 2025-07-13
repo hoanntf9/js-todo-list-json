@@ -409,7 +409,7 @@ function escapeHTML(str) {
 function renderTasks(tasks) {
 
     // Nếu chưa có task nào
-    if (!tasks.length) {
+    if (!tasks?.length) {
         setHTML("#todoList", "<p>Chưa có công việc nào.</p>");
         return;
     }
