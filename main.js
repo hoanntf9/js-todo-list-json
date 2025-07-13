@@ -21,7 +21,7 @@ const tabs = $(".tabs");
 
 const TAB_KEYS = {
     activeTab: "active-tab",
-    completedTab: "completed-tab"
+    completedTab: "completed-tab",
 };
 
 let todoTasks = [];
@@ -31,11 +31,11 @@ const http_methods = {
     post: "POST",
     put: "PUT",
     delete: "DELETE",
-    patch: "PATCH"
+    patch: "PATCH",
 };
 
 const httpJsonHeaders = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
 };
 
 const apiBase = "http://localhost:4000/tasks";
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const activeTab = localStorage.getItem("activeTab") || TAB_KEYS.activeTab;
 
     // Bỏ class active khỏi các tab
-    $$(".tab-button").forEach(tab => tab.classList.remove("active"));
+    $$(".tab-button").forEach((tab) => tab.classList.remove("active"));
 
     // Tìm đúng tab đang lưu và set class active
     const currentTab = $(`.tab-button[data-tab="${activeTab}"]`);
@@ -58,15 +58,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Hiển thị danh sách task khi trang web tải xong
     switch (activeTab) {
-
         case TAB_KEYS.activeTab:
-            const activeTasks = todoTasks?.filter(task => !task.isCompleted);
+            const activeTasks = todoTasks?.filter((task) => !task.isCompleted);
             renderTasks(activeTasks);
 
             break;
 
         case TAB_KEYS.completedTab:
-            const completedTabs = todoTasks?.filter(task => task.isCompleted);
+            const completedTabs = todoTasks?.filter((task) => task.isCompleted);
             renderTasks(completedTabs);
             break;
 
@@ -95,7 +94,7 @@ searchInput.oninput = function (event) {
     $$(".tab-button").forEach((tab) => tab.classList.remove("active"));
     $(`.tab-button[data-tab="${TAB_KEYS.activeTab}"]`).classList.add("active");
 
-    const filteredTasks = todoTasks.filter(task => {
+    const filteredTasks = todoTasks.filter((task) => {
         const title = removeVietnameseTones(task.title);
         const description = removeVietnameseTones(task.description);
 
@@ -124,16 +123,14 @@ function closeForm() {
     // Đổi lại tiêu đề form về ban đầu
     const formTitle = formAdd.querySelector(".modal-title");
     if (formTitle) {
-        formTitle.textContent =
-            formTitle.dataset.original || formTitle.textContent;
+        formTitle.textContent = formTitle.dataset.original || formTitle.textContent;
         delete formTitle.dataset.original;
     }
 
     // Đổi lại text nút submit về ban đầu
     const submitBtn = formAdd.querySelector(".btn-submit");
     if (submitBtn) {
-        submitBtn.textContent =
-            submitBtn.dataset.original || submitBtn.textContent;
+        submitBtn.textContent = submitBtn.dataset.original || submitBtn.textContent;
         delete submitBtn.dataset.original;
     }
 
@@ -164,7 +161,7 @@ function openFormModal() {
 function openFormDeleteModal(task, taskIndex) {
     formDelete.className = "modal-overlay show";
 
-    const messageDelete = formDelete.querySelector('.delete-message');
+    const messageDelete = formDelete.querySelector(".delete-message");
     messageDelete.innerHTML = `Are you sure delete task <span class="delete-title">${task?.title}?</span>`;
 
     deleteIndex = taskIndex;
@@ -209,7 +206,7 @@ async function createTask(task) {
     const res = await fetch(apiBase, {
         method: http_methods.post,
         headers: httpJsonHeaders,
-        body: JSON.stringify(task)
+        body: JSON.stringify(task),
     });
     return res.json();
 }
@@ -219,7 +216,7 @@ async function updateTask(id, task) {
     const res = await fetch(`${apiBase}/${id}`, {
         method: http_methods.put,
         headers: httpJsonHeaders,
-        body: JSON.stringify(task)
+        body: JSON.stringify(task),
     });
     return res.json();
 }
@@ -227,7 +224,7 @@ async function updateTask(id, task) {
 // `deleteTask`.
 async function deleteTask(id) {
     return await fetch(`${apiBase}/${id}`, {
-        method: http_methods.delete
+        method: http_methods.delete,
     });
 }
 
@@ -236,7 +233,7 @@ async function toggleCompleteTask(id, isCompleted) {
     return await fetch(`${apiBase}/${id}`, {
         method: http_methods.patch,
         headers: httpJsonHeaders,
-        body: JSON.stringify({ isCompleted })
+        body: JSON.stringify({ isCompleted }),
     });
 }
 
@@ -296,7 +293,7 @@ todoForm.onsubmit = async (event) => {
     closeForm();
 
     saveTabActive(TAB_KEYS.activeTab);
-    $$(".tab-button").forEach(tab => tab.classList.remove("active"));
+    $$(".tab-button").forEach((tab) => tab.classList.remove("active"));
     $(`.tab-button[data-tab="${TAB_KEYS.activeTab}"]`).classList.add("active");
 
     // Hiển thị lại danh sách task
@@ -321,7 +318,6 @@ todoList.onclick = async function (event) {
         const taskIndex = editBtn.dataset.index;
 
         const task = await getTaskDetail(taskIndex);
-
 
         // Đánh dấu đang sửa task này
         editIndex = taskIndex;
@@ -402,18 +398,17 @@ function setHTML(selector, html) {
 
 function escapeHTML(str) {
     const mapObj = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;',
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
     };
     return str.replace(/[&<>"']/g, (char) => mapObj[char]);
 }
 
 // Hàm hiển thị danh sách task ra màn hình
 function renderTasks(tasks) {
-
     // Nếu chưa có task nào
     if (!tasks?.length) {
         setHTML("#todoList", "<p>Chưa có công việc nào.</p>");
@@ -431,15 +426,26 @@ function renderTasks(tasks) {
           <button class="task-menu">
             <i class="fa-solid fa-ellipsis fa-icon"></i>
             <div class="dropdown-menu">
-              <div class="dropdown-item edit-btn" data-index="${escapeHTML(task.id)}">
-                <i class="fa-solid fa-pen-to-square fa-icon"></i>
-                Edit
-              </div>
-              <div class="dropdown-item complete-btn" data-index="${escapeHTML(task.id)}">
+              ${!task.isCompleted
+                    ? `
+                        <div class="dropdown-item edit-btn" data-index="${escapeHTML(
+                        task.id
+                    )}">
+                        <i class="fa-solid fa-pen-to-square fa-icon"></i>
+                        Edit
+                        </div>`
+                    : ""
+                }
+
+              <div class="dropdown-item complete-btn" data-index="${escapeHTML(
+                    task.id
+                )}">
                 <i class="fa-solid fa-check fa-icon"></i>
                 ${task.isCompleted ? "Mark as Active" : "Mark as Complete"} 
               </div>
-              <div class="dropdown-item delete delete-btn" data-index="${escapeHTML(task.id)}">
+              <div class="dropdown-item delete delete-btn" data-index="${escapeHTML(
+                    task.id
+                )}">
                 <i class="fa-solid fa-trash fa-icon"></i>
                 Delete
               </div>
@@ -447,7 +453,9 @@ function renderTasks(tasks) {
           </button>
         </div>
         <p class="task-description">${escapeHTML(task.description)}</p>
-        <div class="task-time">${escapeHTML(task.startTime)} - ${escapeHTML(task.endTime)}</div>
+        <div class="task-time">${escapeHTML(task.startTime)} - ${escapeHTML(
+                    task.endTime
+                )}</div>
       </div>
     `
         )
@@ -464,7 +472,6 @@ tabs.onclick = async function (event) {
     // Lấy giá trị tab từ data-tab
     const tabActiveValue = tabButton.dataset.tab;
 
-
     if (!tabButton) return;
 
     // Bỏ các `active` khỏi tất cả tab
@@ -479,17 +486,17 @@ tabs.onclick = async function (event) {
     // Render đúng khi click vào từng tab
     switch (tabActiveValue) {
         case TAB_KEYS.activeTab:
-            const activeTasks = todoTasks?.filter(task => !task.isCompleted);
+            const activeTasks = todoTasks?.filter((task) => !task.isCompleted);
             renderTasks(activeTasks);
             break;
 
         case "completed-tab":
-            const completedTabs = todoTasks?.filter(task => task.isCompleted);
+            const completedTabs = todoTasks?.filter((task) => task.isCompleted);
             renderTasks(completedTabs);
             break;
 
         default:
-            renderTasks(todoTasks);
+            renderTasks(activeTasks);
             break;
     }
 };
@@ -498,10 +505,10 @@ async function getTasksByTab(tab) {
     const tasks = await getAllTasks();
     switch (tab) {
         case TAB_KEYS.activeTab:
-            return tasks.filter(task => !task.isCompleted);
+            return tasks.filter((task) => !task.isCompleted);
 
         case TAB_KEYS.completedTab:
-            return tasks.filter(task => task.isCompleted);
+            return tasks.filter((task) => task.isCompleted);
 
         default:
             return tasks;
@@ -515,7 +522,7 @@ function showToast({
     gravity = "top",
     position = "center",
     backgroundColor = "#4CAF50",
-    stopOnFocus = true
+    stopOnFocus = true,
 }) {
     Toastify({
         text,
