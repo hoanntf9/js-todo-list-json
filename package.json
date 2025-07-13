@@ -1,0 +1,25 @@
+{
+  "name": "manager-task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "json-server tasks.json --port 3000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoandev0308/manager-task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoandev0308/manager-task/issues"
+  },
+  "homepage": "https://github.com/hoandev0308/manager-task#readme",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3",
+    "uuid": "^11.1.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "tasks": [
+    {
+      "id": "1f44",
+      "title": "Hoc lap trinh",
+      "description": "Mo ta hoc lap trinh",
+      "category": "",
+      "priority": "medium",
+      "startTime": "",
+      "endTime": "",
+      "dueDate": "",
+      "color": "blue",
+      "isCompleted": true
+    }
+  ]
+}
