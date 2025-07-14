@@ -188,13 +188,13 @@ function openFormModal() {
 }
 
 // Hàm mở form confirm xác nhận xóa
-function openFormDeleteModal(task, taskIndex) {
+function openFormDeleteModal(task) {
     formDelete.className = "modal-overlay show";
 
     const messageDelete = formDelete.querySelector(".delete-message");
     messageDelete.innerHTML = `Are you sure delete task <span class="delete-title">${task?.title}?</span>`;
 
-    deleteIndex = taskIndex;
+    deleteIndex = task.id;
 }
 
 // Khi nhấn nút "Thêm mới"
@@ -320,12 +320,12 @@ todoForm.onsubmit = async (event) => {
         });
     }
 
-    // Đóng form
-    closeForm();
-
     saveTabActive(TAB_KEYS.activeTab);
     $$(".tab-button").forEach((tab) => tab.classList.remove("active"));
     $(`.tab-button[data-tab="${TAB_KEYS.allTab}"]`).classList.add("active");
+
+    // Đóng form
+    closeForm();
 
     // Hiển thị lại danh sách task
     const tasks = await getFilteredTasks();
@@ -383,11 +383,10 @@ todoList.onclick = async function (event) {
     if (deleteBtn) {
         const taskIndex = deleteBtn.dataset.index;
 
-        // const task = todoTasks[taskIndex];
         const task = await getTaskDetail(taskIndex);
 
         // Hiển thị modal xác nhận trước khi xóa
-        openFormDeleteModal(task, taskIndex);
+        openFormDeleteModal(task);
     }
 
     // Nếu nhấn nút hoàn thành/chưa hoàn thành
@@ -400,19 +399,39 @@ todoList.onclick = async function (event) {
         await toggleCompleteTask(task.id, !task.isCompleted);
 
         // Lưu và hiển thị lại
-        const currentTab = localStorage.getItem("activeTab") || TAB_KEYS.activeTab;
-        const tasks = await getTasksByTab(currentTab);
+        const currentTab = localStorage.getItem("activeTab");
 
-        renderTasks(tasks);
+        // Hiển thị danh sách task khi trang web tải xong
+        switch (currentTab) {
+            case TAB_KEYS.activeTab:
+                const activeTasks = await getFilteredTasks({
+                    isCompleted: false
+                });
+
+                activeTasks.length > 0 ? renderTasks(activeTasks) : [];
+                break;
+
+            case TAB_KEYS.completedTab:
+                const completedTasks = await getFilteredTasks({
+                    isCompleted: true
+                });
+
+                completedTasks.length > 0 ? renderTasks(completedTasks) : [];
+                break;
+
+            default:
+                const allTasks = await getFilteredTasks();
+
+                allTasks.length > 0 ? renderTasks(allTasks) : [];
+                break;
+        }
     }
 };
 
 deleteTaskSubmit.onclick = async function () {
-    // Xóa task khỏi danh sách,
-
     await deleteTask(deleteIndex);
 
-    const tasks = await getAllTasks();
+    const tasks = await getFilteredTasks();
     renderTasks(tasks);
 
     showToast({
