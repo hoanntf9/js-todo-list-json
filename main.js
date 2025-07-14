@@ -448,7 +448,7 @@ function setHTML(selector, html) {
     element.innerHTML = html;
 }
 
-function escapeHTML(str) {
+function escapeHTML(str = "") {
     const mapObj = {
         "&": "&amp;",
         "<": "&lt;",
@@ -471,17 +471,17 @@ function renderTasks(tasks) {
     const html = tasks
         .map(
             (task) => `
-                <div class="task-card ${escapeHTML(task.color)} ${task.isCompleted ? "completed" : ""
+                <div class="task-card ${escapeHTML(task?.color)} ${task.isCompleted ? "completed" : ""
                 }">
                 <div class="task-header">
-                <h3 class="task-title">${escapeHTML(task.title)}</h3>
+                <h3 class="task-title">${escapeHTML(task?.title)}</h3>
                 <button class="task-menu">
                     <i class="fa-solid fa-ellipsis fa-icon"></i>
                     <div class="dropdown-menu">
                     ${!task.isCompleted
                     ? `
                                 <div class="dropdown-item edit-btn" data-index="${escapeHTML(
-                        task.id
+                        task?.id
                     )}">
                                 <i class="fa-solid fa-pen-to-square fa-icon"></i>
                                 Edit
@@ -490,13 +490,13 @@ function renderTasks(tasks) {
                 }
 
                     <div class="dropdown-item complete-btn" data-index="${escapeHTML(
-                    task.id
+                    task?.id
                 )}">
                         <i class="fa-solid fa-check fa-icon"></i>
                         ${task.isCompleted ? "Mark as Active" : "Mark as Complete"} 
                     </div>
                     <div class="dropdown-item delete delete-btn" data-index="${escapeHTML(
-                    task.id
+                    task?.id
                 )}">
                         <i class="fa-solid fa-trash fa-icon"></i>
                         Delete
@@ -504,9 +504,9 @@ function renderTasks(tasks) {
                     </div>
                 </button>
                 </div>
-                <p class="task-description">${escapeHTML(task.description)}</p>
-                <div class="task-time">${escapeHTML(task.startTime)} - ${escapeHTML(
-                    task.endTime
+                <p class="task-description">${escapeHTML(task?.description)}</p>
+                <div class="task-time">${escapeHTML(task?.startTime)} - ${escapeHTML(
+                    task?.endTime
                 )}</div>
                 </div>
             `
