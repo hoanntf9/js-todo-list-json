@@ -20,6 +20,7 @@ const allTabBtn = $(".all-tab");
 const tabs = $(".tabs");
 
 const TAB_KEYS = {
+    allTab: "all-tab",
     activeTab: "active-tab",
     completedTab: "completed-tab",
 };
@@ -41,7 +42,7 @@ const httpJsonHeaders = {
 const apiBase = "https://json-tasks-hosting.onrender.com/tasks";
 
 document.addEventListener("DOMContentLoaded", async function () {
-    todoTasks = await getAllTasks();
+    // todoTasks = await getAllTasks();
 
     // Lấy activeTab từ localStorage
     const activeTab = localStorage.getItem("activeTab") || TAB_KEYS.activeTab;
@@ -59,21 +60,50 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Hiển thị danh sách task khi trang web tải xong
     switch (activeTab) {
         case TAB_KEYS.activeTab:
-            const activeTasks = todoTasks?.filter((task) => !task.isCompleted);
-            renderTasks(activeTasks);
+            const activeTasks = await getFilteredTasks({
+                isCompleted: false
+            });
 
+            activeTasks.length > 0 ? renderTasks(activeTasks) : [];
             break;
 
         case TAB_KEYS.completedTab:
-            const completedTabs = todoTasks?.filter((task) => task.isCompleted);
-            renderTasks(completedTabs);
+            const completedTasks = await getFilteredTasks({
+                isCompleted: true
+            });
+
+            completedTasks.length > 0 ? renderTasks(completedTasks) : [];
             break;
 
         default:
-            renderTasks(todoTasks);
+            const allTasks = await getFilteredTasks();
+
+            allTasks.length > 0 ? renderTasks(allTasks) : [];
             break;
     }
 });
+
+// Hàm lấy tasks theo trạng thái `completed` hoặc `active`
+async function getFilteredTasks(filters = {}) {
+    const queryParams = new URLSearchParams();
+
+    for (const key in filters) {
+        if (filters[key] !== undefined && filters[key] !== "") {
+            queryParams.append(key, filters[key]);
+        }
+    }
+
+    const url = `${apiBase}?${queryParams.toString()}`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 // Hàm xóa dấu tiếng việt để tìm kiếm
 function removeVietnameseTones(str) {
@@ -250,6 +280,7 @@ function checkTitleDuplicate(title, taskIndex) {
 // Khi gửi form (thêm mới hoặc sửa task)
 todoForm.onsubmit = async (event) => {
     event.preventDefault();
+
     // Lấy dữ liệu từ form
     const formData = Object.fromEntries(new FormData(todoForm));
     const isDuplicateTitle = checkTitleDuplicate(formData.title, editIndex);
@@ -294,11 +325,10 @@ todoForm.onsubmit = async (event) => {
 
     saveTabActive(TAB_KEYS.activeTab);
     $$(".tab-button").forEach((tab) => tab.classList.remove("active"));
-    $(`.tab-button[data-tab="${TAB_KEYS.activeTab}"]`).classList.add("active");
+    $(`.tab-button[data-tab="${TAB_KEYS.allTab}"]`).classList.add("active");
 
     // Hiển thị lại danh sách task
-    todoTasks = await getAllTasks();
-    const tasks = await getTasksByTab(TAB_KEYS.activeTab);
+    const tasks = await getFilteredTasks();
     renderTasks(tasks);
 };
 
@@ -379,6 +409,7 @@ todoList.onclick = async function (event) {
 
 deleteTaskSubmit.onclick = async function () {
     // Xóa task khỏi danh sách,
+
     await deleteTask(deleteIndex);
 
     const tasks = await getAllTasks();
@@ -421,54 +452,53 @@ function renderTasks(tasks) {
     const html = tasks
         .map(
             (task) => `
-        <div class="task-card ${escapeHTML(task.color)} ${task.isCompleted ? "completed" : ""
+                <div class="task-card ${escapeHTML(task.color)} ${task.isCompleted ? "completed" : ""
                 }">
-        <div class="task-header">
-          <h3 class="task-title">${escapeHTML(task.title)}</h3>
-          <button class="task-menu">
-            <i class="fa-solid fa-ellipsis fa-icon"></i>
-            <div class="dropdown-menu">
-              ${!task.isCompleted
+                <div class="task-header">
+                <h3 class="task-title">${escapeHTML(task.title)}</h3>
+                <button class="task-menu">
+                    <i class="fa-solid fa-ellipsis fa-icon"></i>
+                    <div class="dropdown-menu">
+                    ${!task.isCompleted
                     ? `
-                        <div class="dropdown-item edit-btn" data-index="${escapeHTML(
+                                <div class="dropdown-item edit-btn" data-index="${escapeHTML(
                         task.id
                     )}">
-                        <i class="fa-solid fa-pen-to-square fa-icon"></i>
-                        Edit
-                        </div>`
+                                <i class="fa-solid fa-pen-to-square fa-icon"></i>
+                                Edit
+                                </div>`
                     : ""
                 }
 
-              <div class="dropdown-item complete-btn" data-index="${escapeHTML(
+                    <div class="dropdown-item complete-btn" data-index="${escapeHTML(
                     task.id
                 )}">
-                <i class="fa-solid fa-check fa-icon"></i>
-                ${task.isCompleted ? "Mark as Active" : "Mark as Complete"} 
-              </div>
-              <div class="dropdown-item delete delete-btn" data-index="${escapeHTML(
+                        <i class="fa-solid fa-check fa-icon"></i>
+                        ${task.isCompleted ? "Mark as Active" : "Mark as Complete"} 
+                    </div>
+                    <div class="dropdown-item delete delete-btn" data-index="${escapeHTML(
                     task.id
                 )}">
-                <i class="fa-solid fa-trash fa-icon"></i>
-                Delete
-              </div>
-            </div>
-          </button>
-        </div>
-        <p class="task-description">${escapeHTML(task.description)}</p>
-        <div class="task-time">${escapeHTML(task.startTime)} - ${escapeHTML(
+                        <i class="fa-solid fa-trash fa-icon"></i>
+                        Delete
+                    </div>
+                    </div>
+                </button>
+                </div>
+                <p class="task-description">${escapeHTML(task.description)}</p>
+                <div class="task-time">${escapeHTML(task.startTime)} - ${escapeHTML(
                     task.endTime
                 )}</div>
-      </div>
-    `
+                </div>
+            `
         )
         .join("");
 
-    // Hiển thị HTML ra màn hình
     todoList.innerHTML = html;
 }
 
 tabs.onclick = async function (event) {
-    const todoTasks = await getAllTasks();
+    // const todoTasks = await getAllTasks();
 
     const tabButton = event.target.closest(".tab-button");
     // Lấy giá trị tab từ data-tab
@@ -488,17 +518,25 @@ tabs.onclick = async function (event) {
     // Render đúng khi click vào từng tab
     switch (tabActiveValue) {
         case TAB_KEYS.activeTab:
-            const activeTasks = todoTasks?.filter((task) => !task.isCompleted);
-            renderTasks(activeTasks);
+            const activeTasks = await getFilteredTasks({
+                isCompleted: false
+            });
+
+            activeTasks.length > 0 ? renderTasks(activeTasks) : [];
             break;
 
-        case "completed-tab":
-            const completedTabs = todoTasks?.filter((task) => task.isCompleted);
-            renderTasks(completedTabs);
+        case TAB_KEYS.completedTab:
+            const completedTasks = await getFilteredTasks({
+                isCompleted: true
+            });
+
+            completedTasks.length > 0 ? renderTasks(completedTasks) : [];
             break;
 
         default:
-            renderTasks(activeTasks);
+            const allTasks = await getFilteredTasks();
+
+            allTasks.length > 0 ? renderTasks(allTasks) : [];
             break;
     }
 };
