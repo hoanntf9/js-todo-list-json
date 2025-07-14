@@ -456,7 +456,7 @@ function escapeHTML(str = "") {
         '"': "&quot;",
         "'": "&#039;",
     };
-    return str.replace(/[&<>"']/g, (char) => mapObj[char]);
+    return str?.replace(/[&<>"']/g, (char) => mapObj[char]);
 }
 
 // Hàm hiển thị danh sách task ra màn hình
