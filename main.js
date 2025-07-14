@@ -38,7 +38,7 @@ const httpJsonHeaders = {
     "Content-Type": "application/json",
 };
 
-const apiBase = "http://localhost:4000/tasks";
+const apiBase = "https://json-tasks-hosting.onrender.com/tasks";
 
 document.addEventListener("DOMContentLoaded", async function () {
     todoTasks = await getAllTasks();
